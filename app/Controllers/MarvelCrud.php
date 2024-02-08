@@ -141,30 +141,31 @@ class MarvelCrud extends BaseController
 
     public function getUrlHash($url = '') 
     {
-        // Cargar las variables de entorno
-        $envFilePath = WRITEPATH . '.env';
-        $dotenv      = new DotEnv($envFilePath);
-        $dotenv->load();
+        // Intentar cargar las variables de entorno hasta que ambas claves estén disponibles
+        while (true) {
+            // Cargar las variables de entorno
+            $envFilePath = WRITEPATH . '.env';
+            $dotenv      = new DotEnv($envFilePath);
+            $dotenv->load();
 
-        // Obtener las claves pública y privada desde las variables de entorno
-        $publicKey  = env('CI_API_KEY_PUBLIC');
-        $privateKey = env('CI_API_KEY_PRIVATE');
+            // Obtener las claves pública y privada desde las variables de entorno
+            $publicKey  = env('CI_API_KEY_PUBLIC');
+            $privateKey = env('CI_API_KEY_PRIVATE');
 
-        // Verificar si se proporcionaron las claves
-        if (empty($publicKey) || empty($privateKey)) {
-            return null;
+            // Verificar si ambas claves están configuradas
+            if (!empty($publicKey) && !empty($privateKey)) {
+                // Establecer un timestamp en 1
+                $ts = 1;
+
+                // Crear un hash utilizando md5 y los valores de la API
+                $hash = md5($ts . $privateKey . $publicKey);
+
+                // URL formateada para su consumo
+                $apiUrlCharacters = $url . '?ts=' . $ts . '&apikey=' . $publicKey . '&hash=' . $hash;
+
+                return $apiUrlCharacters;
+            }
         }
-
-        // Establecer un timestamp en 1
-        $ts = 1;
-
-        // Crear un hash utilizando md5 y los valores de la API
-        $hash = md5($ts . $privateKey . $publicKey);
-
-        // URL formateada para su consumo
-        $apiUrlCharacters = $url . '?ts=' . $ts . '&apikey=' . $publicKey . '&hash=' . $hash;
-
-        return $apiUrlCharacters;
     }
 
     public function setCharacters()
