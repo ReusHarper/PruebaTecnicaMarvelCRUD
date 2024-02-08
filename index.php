@@ -1,4 +1,4 @@
- <?php
+<?php
 
 // Check PHP version.
 $minPhpVersion = '7.4'; // If you update this, don't forget to update `spark`.
@@ -45,7 +45,7 @@ require_once SYSTEMPATH . 'Config/DotEnv.php';
 
 // Define ENVIRONMENT
 if (! defined('ENVIRONMENT')) {
-    define('ENVIRONMENT', env('CI_ENVIRONMENT', 'production'));
+    define('ENVIRONMENT', env('CI_ENVIRONMENT', 'development'));
 }
 
 // Load Config Cache
